@@ -1,24 +1,23 @@
 {
-  "name": "card-memory-game",
+  "name": "reactive-memory-game",
   "version": "1.0.0",
-  "description": "A memory game written in Vanilla JavaScript",
-  "main": "index.js",
+  "description": "The classic memory card game written in RxJs and Vanilla JS",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --open",
     "start": "webpack -p && node server.js"
   },
   "author": "Kevin Choi",
-  "license": "MIT ",
   "devDependencies": {
-    "css-loader": "^2.1.1",
-    "script-loader": "^0.7.2",
-    "style-loader": "^0.23.1",
-    "webpack": "4.30.0",
+    "css-loader": "2.1.1",
+    "express-favicon": "2.0.1",
+    "script-loader": "0.7.2",
+    "style-loader": "0.23.1",
     "webpack-cli": "3.3.0",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "3.3.1",
+    "webpack": "4.30.0"
   },
   "dependencies": {
-    "express-favicon": "^2.0.1"
+    "rxjs": "6.4.0"
   }
 }
