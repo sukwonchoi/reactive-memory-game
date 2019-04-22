@@ -1,4 +1,26 @@
 h1 {
   text-align: center;
-  color: red;
+  color: blue;
+}
+
+div.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 900px;
+  justify-content: space-between;
+}
+
+.card {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.1);
 }
