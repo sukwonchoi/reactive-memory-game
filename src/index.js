@@ -1,8 +1,7 @@
 import { fromEvent } from 'rxjs';
 import { filter, map, delay, tap, bufferCount, distinctUntilChanged } from 'rxjs/operators';
-
-const CARD_VALUE_ATTRIBUTE = 'data-card-value';
-
+import { generateCardEl, appendCardToBoard } from './html-render';
+import { CARD_VALUE_ATTRIBUTE } from './constants';
 const boardEl = document.getElementById('board');
 
 const onCardClick$ = fromEvent(boardEl, 'click');
@@ -25,33 +24,4 @@ cardPairs$.pipe(delay(500)).subscribe(([firstCard, secondCard]) => {
   }
 });
 
-const generateCardEl = code => {
-  const card = document.createElement('div');
-  card.setAttribute(CARD_VALUE_ATTRIBUTE, code);
-  card.className = 'card';
-
-  const cardContainer = document.createElement('div');
-  cardContainer.setAttribute(CARD_VALUE_ATTRIBUTE, code);
-  cardContainer.className = 'card-container';
-
-  const cardBack = document.createElement('div');
-  cardBack.className = 'card-back';
-  cardBack.innerHTML = code;
-
-  const cardFront = document.createElement('div');
-  cardFront.className = 'card-front';
-  cardFront.innerHTML = '?';
-
-  cardContainer.appendChild(cardBack);
-  cardContainer.appendChild(cardFront);
-
-  card.appendChild(cardContainer);
-  return card;
-};
-
-const appendCardToBoard = (card, board = boardEl) => {
-  boardEl.appendChild(card);
-};
-
-// hardcode 9 for now
-[1, 2, 3, 3, 2, 1].forEach(i => appendCardToBoard(generateCardEl(i)));
+[1, 2, 3, 3, 2, 1].forEach(i => appendCardToBoard(generateCardEl(i), boardEl));
