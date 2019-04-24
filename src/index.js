@@ -2,6 +2,7 @@ import { fromEvent } from 'rxjs';
 import { filter, map, delay, tap, bufferCount, distinctUntilChanged } from 'rxjs/operators';
 import { generateCardEl, appendCardToBoard } from './html-render';
 import { CARD_VALUE_ATTRIBUTE } from './constants';
+import { shuffle } from './card-util';
 const boardEl = document.getElementById('board');
 
 const onCardClick$ = fromEvent(boardEl, 'click');
@@ -24,4 +25,6 @@ cardPairs$.pipe(delay(500)).subscribe(([firstCard, secondCard]) => {
   }
 });
 
-[1, 2, 3, 3, 2, 1].forEach(i => appendCardToBoard(generateCardEl(i), boardEl));
+// TODO: Randomize these based on drop down(?) or difficulty
+const array = [1, 2, 3, 3, 2, 1];
+shuffle(array).forEach(i => appendCardToBoard(generateCardEl(i), boardEl));
