@@ -3,13 +3,24 @@ import { filter, map, tap, delay, bufferCount, distinctUntilChanged, scan, withL
 import { generateCardEl, appendCardToBoard } from './html-render';
 import { CARD_VALUE_ATTRIBUTE } from './constants';
 import { shuffle } from './card-util';
+import { Card } from './custom-elements/card';
+
+window.customElements.define('memory-card', Card);
 
 const boardEl = document.getElementById('board');
 const array = [1, 2, 3, 3, 2, 1];
 
 const score$ = new BehaviorSubject(0);
 const shuffledCards$ = new Subject();
-const shuffledCardElements$ = shuffledCards$.pipe(map(shuffledCards => shuffledCards.map(generateCardEl)));
+const shuffledCardElements$ = shuffledCards$.pipe(
+  map(shuffledCards =>
+    shuffledCards.map((value, index) => {
+      const card = document.createElement('memory-card');
+      card.initializeComponent(value, index);
+      return card;
+    })
+  )
+);
 
 const onCardClick$ = fromEvent(boardEl, 'click');
 const cardValue$ = onCardClick$.pipe(
@@ -24,8 +35,10 @@ cardValue$.subscribe(e => e.classList.toggle('active'));
 cardPairs$
   .pipe(
     delay(500),
-    tap(([firstCard, secondCard]) => {
-      if (firstCard.getAttribute(CARD_VALUE_ATTRIBUTE) === secondCard.getAttribute(CARD_VALUE_ATTRIBUTE)) {
+    withLatestFrom(shuffledCards$),
+    tap(([[firstCard, secondCard], cards]) => {
+      console.log({ firstCard, secondCard, cards });
+      if (firstCard.value === secondCard.value) {
         firstCard.style.visibility = 'hidden';
         secondCard.style.visibility = 'hidden';
       } else {
@@ -33,10 +46,7 @@ cardPairs$
         secondCard.classList.toggle('active');
       }
     }),
-    filter(
-      ([firstCard, secondCard]) =>
-        firstCard.getAttribute(CARD_VALUE_ATTRIBUTE) === secondCard.getAttribute(CARD_VALUE_ATTRIBUTE)
-    ),
+    filter(([[firstCard, secondCard], cards]) => firstCard.value === secondCard.value),
     withLatestFrom(score$)
   )
   .subscribe(([_, score]) => {

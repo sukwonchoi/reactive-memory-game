@@ -1,12 +1,11 @@
 import { CARD_VALUE_ATTRIBUTE } from './constants';
 
-export const generateCardEl = code => {
+export const generateCardEl = (code, index) => {
   const card = document.createElement('div');
-  card.setAttribute(CARD_VALUE_ATTRIBUTE, code);
+  card.setAttribute(CARD_VALUE_ATTRIBUTE, index);
   card.className = 'card';
 
   const cardContainer = document.createElement('div');
-  cardContainer.setAttribute(CARD_VALUE_ATTRIBUTE, code);
   cardContainer.className = 'card-container';
 
   const cardBack = document.createElement('div');

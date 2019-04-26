@@ -1,1 +1,1 @@
-export const CARD_VALUE_ATTRIBUTE = 'data-card-value';
+export const CARD_VALUE_ATTRIBUTE = 'data-card-index';
