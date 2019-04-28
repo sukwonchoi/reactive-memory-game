@@ -1,28 +1,29 @@
 import { fromEvent, of, Subject, BehaviorSubject } from 'rxjs';
 import { filter, map, tap, delay, bufferCount, distinctUntilChanged, scan, withLatestFrom } from 'rxjs/operators';
 import { generateCardEl, appendCardToBoard } from './html-render';
-import { CARD_VALUE_ATTRIBUTE } from './constants';
 import { shuffle } from './card-util';
 import { Card } from './custom-elements/card';
+
+import './index.ts';
 
 window.customElements.define('memory-card', Card);
 
 const boardEl = document.getElementById('board');
-const array = [1, 2, 3, 3, 2, 1];
+const array = [1, 2, 3, 3, 2, 1, 4, 4];
 
 const score$ = new BehaviorSubject(0);
-const shuffledCards$ = new Subject();
+const shuffledCards$ = new Subject<any>();
 const shuffledCardElements$ = shuffledCards$.pipe(
-  map(shuffledCards =>
+  map((shuffledCards: number[]) =>
     shuffledCards.map((value, index) => {
-      const card = document.createElement('memory-card');
+      const card = document.createElement('memory-card') as Card;
       card.initializeComponent(value, index);
       return card;
     })
   )
 );
 
-const onCardClick$ = fromEvent(boardEl, 'click');
+const onCardClick$ = fromEvent<any>(boardEl!, 'click');
 const cardValue$ = onCardClick$.pipe(
   filter(e => e.target.className === 'card-front' || e.target.className === 'card-back'),
   map(e => e.path[2]), // hacky way to find the 'card' element. Figure out better way

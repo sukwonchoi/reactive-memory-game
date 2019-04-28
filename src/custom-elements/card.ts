@@ -1,13 +1,19 @@
 export class Card extends HTMLElement {
+  value: any;
+  index: any;
   constructor() {
     super();
   }
 
-  initializeComponent(value, index) {
+  initializeComponent(value: number, index: number) {
     this.className = 'card';
     this.value = value;
     this.index = index;
     this.render();
+  }
+
+  toggleActiveStatus() {
+    this.classList.toggle('active');
   }
 
   render() {

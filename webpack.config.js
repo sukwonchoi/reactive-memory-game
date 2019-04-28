@@ -1,19 +1,20 @@
 // webpack.config.js
 module.exports = {
-  entry: ['./src/index.js', './src/index.css'],
+  entry: ['./src/index.ts', './src/index.css'],
   output: {
     path: __dirname,
     publicPath: '/',
     filename: 'dist/bundle.js'
   },
+  resolve: {
+    extensions: ['.ts', '.js', '.json']
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['@babel/preset-env']
-        }
+        test: /\.(ts|js)x?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
