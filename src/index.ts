@@ -1,65 +1,75 @@
 import { fromEvent, of, Subject, BehaviorSubject } from 'rxjs';
 import { filter, map, tap, delay, bufferCount, distinctUntilChanged, scan, withLatestFrom } from 'rxjs/operators';
 import { generateCardEl, appendCardToBoard } from './html-render';
-import { shuffle } from './card-util';
-import { Card } from './custom-elements/card';
+import { shuffle, generateCardMetaData, removeAllChildNodes } from './card-util';
+import { Card as CardElement } from './custom-elements/card';
 
-import './index.ts';
+interface CardMouseEvent extends MouseEvent {
+  target: HTMLDivElement;
+  path: HTMLElement[];
+}
 
-window.customElements.define('memory-card', Card);
+window.customElements.define('memory-card', CardElement);
+const boardEl = document.getElementById('board')!;
+const scoreEl = document.getElementById('score')!;
 
-const boardEl = document.getElementById('board');
-const array = [1, 2, 3, 3, 2, 1, 4, 4];
+const uniqueCardsCount = 5;
 
 const score$ = new BehaviorSubject(0);
 const shuffledCards$ = new Subject<any>();
 const shuffledCardElements$ = shuffledCards$.pipe(
   map((shuffledCards: number[]) =>
     shuffledCards.map((value, index) => {
-      const card = document.createElement('memory-card') as Card;
+      const card = document.createElement('memory-card') as CardElement;
       card.initializeComponent(value, index);
       return card;
     })
   )
 );
 
-const onCardClick$ = fromEvent<any>(boardEl!, 'click');
+const onCardClick$ = fromEvent<CardMouseEvent>(boardEl!, 'click');
 const cardValue$ = onCardClick$.pipe(
-  filter(e => e.target.className === 'card-front' || e.target.className === 'card-back'),
-  map(e => e.path[2]), // hacky way to find the 'card' element. Figure out better way
+  filter(e => {
+    const target = e.target;
+    return !!target && (target.className === 'card-front' || target.className === 'card-back');
+  }),
+  map(e => e.path[2] as CardElement), // hacky way to find the 'card' element. Figure out better way
   distinctUntilChanged() // so you don't double click the same element
 );
 const cardPairs$ = cardValue$.pipe(bufferCount(2));
 
-cardValue$.subscribe(e => e.classList.toggle('active'));
+cardValue$.subscribe(e => e.toggleActiveStatus());
 
 cardPairs$
   .pipe(
-    delay(500),
-    withLatestFrom(shuffledCards$),
-    tap(([[firstCard, secondCard], cards]) => {
-      console.log({ firstCard, secondCard, cards });
+    delay(800),
+    tap(([firstCard, secondCard]) => {
       if (firstCard.value === secondCard.value) {
         firstCard.style.visibility = 'hidden';
         secondCard.style.visibility = 'hidden';
       } else {
-        firstCard.classList.toggle('active');
-        secondCard.classList.toggle('active');
+        firstCard.toggleActiveStatus();
+        secondCard.toggleActiveStatus();
       }
     }),
-    filter(([[firstCard, secondCard], cards]) => firstCard.value === secondCard.value),
+    filter(([firstCard, secondCard]) => firstCard.value === secondCard.value),
     withLatestFrom(score$)
   )
   .subscribe(([_, score]) => {
-    if (score === 2) {
+    if (score === uniqueCardsCount - 1) {
       // basic reset logic
       score$.next(0);
-      shuffledCards$.next(shuffle(array));
+      shuffledCards$.next(shuffle(generateCardMetaData(uniqueCardsCount)));
     } else {
       score$.next(++score);
     }
   });
 
-shuffledCardElements$.subscribe(cards => cards.forEach(c => appendCardToBoard(c, boardEl)));
+score$.subscribe(score => (scoreEl.innerHTML = `${score}`));
 
-shuffledCards$.next(shuffle(array));
+shuffledCardElements$.subscribe(cards => {
+  removeAllChildNodes(boardEl);
+  cards.forEach(c => appendCardToBoard(c, boardEl));
+});
+
+shuffledCards$.next(shuffle(generateCardMetaData(uniqueCardsCount)));

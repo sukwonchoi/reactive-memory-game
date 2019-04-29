@@ -1,11 +1,11 @@
-export class Card extends HTMLElement {
-  value: any;
-  index: any;
+export class Card<T = number> extends HTMLElement {
+  value?: T;
+  index?: number;
   constructor() {
     super();
   }
 
-  initializeComponent(value: number, index: number) {
+  initializeComponent(value: T, index: number) {
     this.className = 'card';
     this.value = value;
     this.index = index;
