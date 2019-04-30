@@ -1,4 +1,4 @@
-export class Card<T = number> extends HTMLElement {
+export class CardElement<T = number> extends HTMLElement {
   value?: T;
   index?: number;
   constructor() {
