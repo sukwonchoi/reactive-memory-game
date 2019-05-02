@@ -7,7 +7,7 @@ module.exports = {
     filename: 'dist/bundle.js'
   },
   resolve: {
-    extensions: ['.ts', '.js', '.json']
+    extensions: ['.ts', '.js', '.json', '.png']
   },
   module: {
     rules: [
@@ -29,6 +29,15 @@ module.exports = {
               localIdentName: '[name]_[local]_[hash:base64]',
               sourceMap: true
             }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {}
           }
         ]
       }

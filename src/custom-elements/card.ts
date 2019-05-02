@@ -1,3 +1,7 @@
+// import { SA } from '../assets';
+
+import * as cardBackUrl from '../assets/card-back.png';
+
 export class CardElement<T = number> extends HTMLElement {
   value?: T;
   index?: number;
@@ -19,8 +23,12 @@ export class CardElement<T = number> extends HTMLElement {
   render() {
     this.innerHTML = `
     <div class="card-container">
-      <div class="card-back">${this.value}</div>
-      <div class="card-front">?</div>
+      <div class="card-back">
+        ${this.value}
+      </div>
+      <div class="card-front">
+        <img class="card-img" src="${cardBackUrl.default}" />
+      </div>
     </div>`;
   }
 }

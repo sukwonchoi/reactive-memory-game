@@ -58,9 +58,9 @@ const shuffledCardElements$ = shuffledCards$.pipe(
 const cardValue$ = onCardClick$.pipe(
   filter(e => {
     const target = e.target;
-    return !!target && (target.className === 'card-front' || target.className === 'card-back');
+    return !!target && target.className === 'card-img';
   }),
-  map(e => e.path[2] as CardElement), // hacky way to find the 'card' element. Figure out better way
+  map(e => e.path[3] as CardElement), // hacky way to find the 'card' element. Figure out better way
   distinctUntilChanged() // so you don't double click the same element
 );
 cardValue$.subscribe(e => e.toggleActiveStatus());
