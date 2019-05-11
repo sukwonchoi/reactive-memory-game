@@ -78,8 +78,10 @@ start$
     switchMap(config => {
       initializeGameState(config);
       return cardPairs$.pipe(
+        tap(() => (boardEl.style.pointerEvents = 'none')),
         delay(800),
         tap(([firstCard, secondCard]) => {
+          boardEl.style.pointerEvents = 'auto';
           if (firstCard.value === secondCard.value) {
             firstCard.style.visibility = 'hidden';
             secondCard.style.visibility = 'hidden';
